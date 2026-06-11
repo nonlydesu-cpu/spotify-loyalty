@@ -111,4 +111,105 @@ export default function Home() {
             </div>
             <div style={{ width: 32, height: 32, borderRadius: '50%', background: '#1DB954', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#000', fontSize: 12, fontWeight: 500 }}>YOU</div>
           </div>
-          <div style={{ padding: '0 1re
+          <div style={{ padding: '0 1rem' }}>
+            <div style={{ fontSize: 13, fontWeight: 500, marginBottom: 8 }}>最近再生した曲</div>
+            {tracks.map((t, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '7px 0', borderBottom: '0.5px solid #222' }}>
+                <div style={{ fontSize: 12, color: '#555', width: 16, textAlign: 'center' }}>{i+1}</div>
+                <div style={{ width: 40, height: 40, borderRadius: 6, background: t.color, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 500, flexShrink: 0 }}>{t.init}</div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 13, fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{t.name}</div>
+                  <div style={{ fontSize: 11, color: '#888' }}>{t.artist}</div>
+                </div>
+                <div style={{ fontSize: 11, color: '#555' }}>{t.time}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ランキング */}
+      {tab === 'ranking' && (
+        <div>
+          <div style={{ padding: '1rem 1rem 0.5rem', fontSize: 20, fontWeight: 500 }}>アーティストランキング</div>
+          <div style={{ padding: '0 1rem' }}>
+            <div style={{ fontSize: 13, fontWeight: 500, marginBottom: 8 }}>長期（全期間）</div>
+            {rankLong.map((a, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 0', borderBottom: '0.5px solid #222' }}>
+                <div style={{ fontSize: 13, fontWeight: 500, color: i < 3 ? '#1DB954' : '#555', width: 20, textAlign: 'center' }}>{i+1}</div>
+                <div style={{ width: 44, height: 44, borderRadius: '50%', background: a.color, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 500, flexShrink: 0 }}>{a.init}</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 14, fontWeight: 500 }}>{a.name}</div>
+                  <div style={{ fontSize: 11, color: '#888' }}>{a.genre}</div>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: 15, fontWeight: 500, color: '#1DB954' }}>{a.score}</div>
+                  <div style={{ fontSize: 10, color: '#555' }}>忠誠値</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* 忠誠値 */}
+      {tab === 'loyalty' && (
+        <div>
+          <div style={{ padding: '1rem 1rem 0.5rem', fontSize: 20, fontWeight: 500 }}>忠誠値チェッカー</div>
+          <div style={{ display: 'flex', gap: 8, margin: '0 1rem 0.75rem' }}>
+            <input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && addArtist()} placeholder="アーティスト名を入力..." style={{ flex: 1, padding: '8px 12px', border: '0.5px solid #333', borderRadius: 8, background: '#1a1a1a', color: '#fff', fontSize: 13, outline: 'none' }} />
+            <button onClick={addArtist} style={{ padding: '8px 12px', borderRadius: 8, border: 'none', background: '#1DB954', color: '#000', fontSize: 13, fontWeight: 500, cursor: 'pointer' }}>追加</button>
+          </div>
+          <div style={{ display: 'flex', gap: 6, overflowX: 'auto', padding: '0 1rem 0.75rem' }}>
+            {artists.map((a, i) => (
+              <button key={i} onClick={() => setCur(i)} style={{ flexShrink: 0, padding: '5px 10px', borderRadius: 999, border: '0.5px solid #333', background: i === cur ? '#1DB954' : '#1a1a1a', color: i === cur ? '#000' : '#888', fontSize: 12, cursor: 'pointer', fontWeight: i === cur ? 500 : 400 }}>
+                {a.name}
+              </button>
+            ))}
+          </div>
+          {s && rank && (
+            <div style={{ margin: '0 1rem', background: '#1a1a1a', border: '0.5px solid #222', borderRadius: 12, padding: '1.25rem' }}>
+              <div style={{ textAlign: 'center', padding: '0.5rem 0 1rem' }}>
+                <div style={{ fontSize: 13, color: '#888', marginBottom: 4 }}>忠誠値</div>
+                <div style={{ fontSize: 52, fontWeight: 500, color: '#1DB954', lineHeight: 1 }}>{s.total.toFixed(1)}</div>
+                <div style={{ height: 8, background: '#333', borderRadius: 999, margin: '10px 0', overflow: 'hidden' }}>
+                  <div style={{ height: '100%', background: '#1DB954', borderRadius: 999, width: `${s.total}%`, transition: 'width 0.7s ease' }} />
+                </div>
+                <div style={{ display: 'inline-block', padding: '3px 14px', borderRadius: 999, fontSize: 13, fontWeight: 500, background: rank.bg, color: rank.col }}>{rank.label}</div>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, margin: '10px 0' }}>
+                {[['ファン歴', fmtPeriod(artists[cur].period)], ['Top50曲数', `${artists[cur].top50_s}曲/50`], ['保存済み曲', `${artists[cur].saved}曲`], ['最近の再生', `${artists[cur].recentHits}曲/50`]].map(([l, v]) => (
+                  <div key={l} style={{ background: '#222', borderRadius: 8, padding: 10 }}>
+                    <div style={{ fontSize: 11, color: '#888', marginBottom: 2 }}>{l}</div>
+                    <div style={{ fontSize: 15, fontWeight: 500 }}>{v}</div>
+                  </div>
+                ))}
+              </div>
+              <div style={{ fontSize: 11, color: '#555', background: '#222', borderRadius: 8, padding: '8px 10px', marginTop: 10, lineHeight: 1.5 }}>※ デモのため名前からスコアを自動生成しています</div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Now Playing */}
+      <div style={{ position: 'fixed', bottom: 60, left: '50%', transform: 'translateX(-50%)', width: '100%', maxWidth: 390, background: '#1a1a1a', borderTop: '0.5px solid #222', padding: '8px 1rem', display: 'flex', alignItems: 'center', gap: 10 }}>
+        <div style={{ width: 44, height: 44, borderRadius: 6, background: tracks[0].color, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 500, flexShrink: 0 }}>{tracks[0].init}</div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontSize: 13, fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{tracks[0].name}</div>
+          <div style={{ fontSize: 11, color: '#888' }}>{tracks[0].artist}</div>
+        </div>
+        <div style={{ fontSize: 22, color: '#1DB954', cursor: 'pointer' }}>▶</div>
+      </div>
+
+      {/* ボトムナビ */}
+      <div style={{ position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '100%', maxWidth: 390, background: '#111', borderTop: '0.5px solid #222', display: 'flex', height: 60 }}>
+        {(['home','ranking','loyalty'] as const).map((t) => (
+          <button key={t} onClick={() => setTab(t)} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 3, border: 'none', background: 'none', cursor: 'pointer', color: tab === t ? '#1DB954' : '#555', fontSize: 10 }}>
+            <span style={{ fontSize: 22 }}>{t === 'home' ? '🏠' : t === 'ranking' ? '📊' : '⭐'}</span>
+            {t === 'home' ? 'ホーム' : t === 'ranking' ? 'ランキング' : '忠誠値'}
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
