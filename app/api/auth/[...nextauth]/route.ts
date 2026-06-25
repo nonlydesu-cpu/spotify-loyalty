@@ -8,10 +8,10 @@ const handler = NextAuth({
       clientId: process.env.SPOTIFY_CLIENT_ID!,
       clientSecret: process.env.SPOTIFY_CLIENT_SECRET!,
       authorization: {
-        params: {
-          scope: 'user-top-read user-read-recently-played user-follow-read user-library-read',
-        },
-      },
+  params: {
+    scope: 'user-read-private user-read-email user-top-read user-read-recently-played user-follow-read user-library-read',
+  },
+},
     }),
   ],
   callbacks: {
